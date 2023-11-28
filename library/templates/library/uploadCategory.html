@@ -1,0 +1,51 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'library/css/category.css' %}">
+{% endblock %}
+{% block content %}
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for form in form %}
+            {% if form.name != 'category_image' %}
+                <div>
+                    <label for="{{ form.name }}" class="form-label">{{ form.label }}</label>
+                    <p class="form-control">{{ form }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% for form in form %}
+            {% if form.name == 'category_image' %}
+                <div>
+                    <label for="{{ form.name }}" class="form-label">{{ form.label }}</label>
+                    <p class="d-none">{{ form }}</p>
+                    <div class="d-flex justify-content-center align-items-center flex-column mt-5"
+                         style="height: 75%">
+                        <label id="bookDropArea" class="drop-area imageDropArea" for="id_category_image"
+                               style="background-image:linear-gradient(#0d5e3e,rgba(24,128,86,0.5),#0d5e3e),url('{% static "images/img.png" %}');">
+                            <p class="text-white">click to select</p>
+                        </label>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="w-100 justify-content-center align-items-center d-flex"><input type="submit"
+                                                                                   style="text-align: center; font-weight: bolder; font-size: 20px; margin-top: 20px;"
+                                                                                   class=" btn btn-primary w-25"
+                                                                                   value="submit"></div>
+    </form>
+    <script>
+        document.querySelector("input[name='category_image']").addEventListener('change', (e) => {
+            const fileInput = e.target;
+            const dropArea = document.querySelector('.drop-area');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const imageUrl = URL.createObjectURL(file);
+
+                dropArea.style.backgroundImage = `url(${imageUrl})`;
+            }
+        });
+    </script>
+{% endblock content %}

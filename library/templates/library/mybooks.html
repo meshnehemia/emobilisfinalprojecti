@@ -1,0 +1,93 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'library/css/mybooks.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% endblock head %}
+{% block content %}
+    <div class="main">
+        <div class="main1"
+             style="background: linear-gradient(rgba(57,182,156,0.5),rgba(20,119,94,0.5),rgba(57,182,156,0.5)),url('{% static "images/img_2.png" %}')">
+            <div class="d-flex justify-content-end " style="background-color: #0f5132">
+                <a href="{% url 'newBook' %}" class="btn btn-secondary"><h2 class="section-title" style="color: white;">
+                    ADD BOOK</h2></a>
+                <a href="{% url 'newcategory' %}" class="btn btn-secondary"><h2 class="section-title"
+                                                                                style="color: white;">ADD Category</h2>
+                </a>
+                <a href="{% url 'info' %}" class="btn btn-secondary"><h2 class="section-title" style="color: white;">My
+                    sales</h2></a>
+            </div>
+            <div id="carouselExampleIndicators" class="carousel slide " style="height:25%">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                            class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                            aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                            aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner" style="margin-top: 20%">
+                    <div class="carousel-item active">
+                        <h1>Welcome to Mesh Library</h1>
+                        <p>Your go-to destination for a vast collection of books, resources, and knowledge.</p>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>Featured Books</h2>
+                        <p>Explore our carefully curated selection of books, including bestsellers, classics, and hidden
+                            gems. We believe in the power of reading to inspire, educate, and entertain.</p>
+
+                    </div>
+                    <div class="carousel-item">
+                        <h2>Categories</h2>
+                        <p>Dive into specific areas of interest with our categorized collection. From fiction to
+                            non-fiction, science to history, our library covers it all.</p>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="main2">
+            <h1>My books</h1>
+            <div class="main3">
+                {% for book in main_books %}
+                    <div class="element mx-auto bg-white rounded" style="height: 300px; min-width: 23%;margin-top: 10px">
+                        <div class="mx-auto" style="width: 90%">
+                            <img src="{{ book.image.url }}" alt="{{ book.title }}" style="width:100%; height: 200px"
+                                 class="mt-3">
+                            <a href="{% url 'MainbookDescription' book.id %}" class="btn w-100 mt-3 view btn-success"
+                               style="font-size: 20px;color: black">view book</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div style="margin-top: 40px">{% include 'library/footer.html' %}</div>
+        </div>
+        {#        <div class="books-container">#}
+        {#            {% for book in main_books %}#}
+        {#                <div class="book">#}
+        {#                    <img src="{{ book.image.url }}" alt="{{ book.title }}" style="width:150px">#}
+        {#                    <h3>{{ book.title }}</h3>#}
+        {#                    <p>{{ book.description }}</p>#}
+        {#                    <p>Author: {{ book.auther.username }}</p>#}
+        {#                    <p>Type: {{ book.get_type_display }}</p>#}
+        {#                    {% if book.type == 'sale' %}#}
+        {#                        <p>Amount: {{ book.amount }}</p>#}
+        {#                    {% endif %}#}
+        {#            <a href="{% url '' description=book.title %}">View Details</a>#}
+        {#                </div>#}
+        {#            {% endfor %}#}
+        {#        </div>#}
+    </div>
+
+
+{% endblock content %}

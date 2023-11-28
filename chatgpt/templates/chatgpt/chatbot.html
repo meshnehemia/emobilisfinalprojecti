@@ -1,0 +1,205 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <style>
+        @media only screen and (max-width: 600px) {
+            main {
+                width: 100%;
+                height: 70vh;
+                position: relative;
+            }
+
+            .phone {
+                font-size: 10px;
+                width: 100%;
+                height: 70vh;
+                margin: 0;
+                padding: 0;
+            }
+
+            .bd1 {
+                width: 100%;
+            }
+
+            .card {
+                background-color: #0b5ed7;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            .b3 {
+                width: 0;
+                display: none;
+            }
+
+            form {
+                position: fixed;
+                bottom: 2px;
+                left: 3px;
+                width: 100%;
+
+            }
+
+            .laps {
+                display: none;
+            }
+        }
+
+        @media only screen and (min-width: 600px) {
+            .lap {
+                display: none;
+            }
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="lap">
+        <div class="roomList__header">
+            <a href="{% url 'home' %}"
+               style="background-color: #08c6e0; border-radius: 5px; margin: 1px; text-align: center">
+                <h2>Study Room</h2>
+                <p>{{ room_count }} Rooms available</p>
+            </a>
+            <div>
+                <h2>My Chats</h2>
+                <p>UNDER DEVELOPMENT</p>
+            </div>
+            <a class="btn btn--main" href="{% url 'create-room' %}">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                     viewBox="0 0 32 32">
+                    <title>add</title>
+                    <path
+                            d="M16.943 0.943h-1.885v14.115h-14.115v1.885h14.115v14.115h1.885v-14.115h14.115v-1.885h-14.115v-14.115z"
+                    ></path>
+                </svg>
+                Create Room
+            </a>
+        </div>
+        <div style="margin-bottom: 5px">
+            <div class="mobile-menuItems">
+                <a class="btn btn--main btn--pill" href="{% url 'topics' %}">Individuals</a>
+                <a class="btn btn--main btn--pill" href="{% url 'activity' %}">Groups</a>
+                <a href="{% url 'chatbot' %}" class="btn btn--main btn--pill">chat with AI</a>
+            </div>
+        </div>
+    </div>
+    <main class="layout layout--3">
+        <div class="container bd1">
+            <div class="b3"> {% include 'socialmedia/topics_component.html' %}</div>
+            <section style="max-width:50%; min-width: 50%;" class="bg-warning d-flex justify-content-center phone">
+
+                <div class="w-100" style="background-color: #383737">
+                    <div class="laps" >
+                        <div class="roomList__header">
+                            <a href="{% url 'home' %}"
+                               style="background-color: #08c6e0; border-radius: 5px; margin: 1px; text-align: center">
+                                <h2>Study Room</h2>
+                                <p>{{ room_count }} Rooms available</p>
+                            </a>
+                            <div>
+                                <h2>My Chats</h2>
+                                <p>UNDER DEVELOPMENT</p>
+                            </div>
+                            <a class="btn btn--main" href="{% url 'create-room' %}">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                     viewBox="0 0 32 32">
+                                    <title>add</title>
+                                    <path
+                                            d="M16.943 0.943h-1.885v14.115h-14.115v1.885h14.115v14.115h1.885v-14.115h14.115v-1.885h-14.115v-14.115z"
+                                    ></path>
+                                </svg>
+                                Create Room
+                            </a>
+                        </div>
+                        <div style="margin-bottom: 5px">
+                            <div class="mobile-menuItems">
+                                <a class="btn btn--main btn--pill" href="{% url 'topics' %}">Individuals</a>
+                                <a class="btn btn--main btn--pill" href="{% url 'activity' %}">Groups</a>
+                                <a href="{% url 'chatbot' %}" class="btn btn--main btn--pill">chat with AI</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100">
+                        <div class="card" style="background-color: #3f4156;">
+
+                            <div class="card-header d-flex justify-content-between align-items-center p-3 "
+                                 style="border-top: 4px solid #696d97;">
+                                <h5 class="mb-0 lh-1">Chat with ai</h5>
+                            </div>
+                            <div class="card-body overflow-y-scroll nav-change overflow-y-scroll "
+                                 style="max-height: 600px;min-height: 450px; background-color: #3f4156;">
+                                <div class="messages-list">
+                                    <div class="d-flex justify-content-start">
+                                        <div class="d-block">
+                                            <p class="small">CHATBOT</p>
+                                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
+                                                 alt="avatar 1"
+                                                 style="width: 45px; height: 45px; margin-top:-17px; margin-right: 10px ">
+                                        </div>
+                                        <p class="bg-white p-2 rounded "
+                                           style="margin-right: 70px ;margin-top: 50px">Ask me a question</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <form class="message-form">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <input type="text" class="form-control message-input" style="font-size: 15px"
+                                           placeholder="Type your message...">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary btn-send text-dark bg-primary">
+                                            Send
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <script>
+                                const profile = "{{ request.user.avator.url }}";
+                            </script>
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            {% include 'socialmedia/activity_component.html' %}
+        </div>
+    </main>
+    <!-- <div class="chat-container">
+      <div class="card flex-grow-1">
+        <div class="card-header bg-primary text-white">Chat</div>
+        <div class="card-body messages-box">
+          <ul class="list-unstyled messages-list">
+            <li class="message received">
+              <div class="message-text">
+                <div class="message-sender">
+                  <b>AI Chatbot</b>
+                </div>
+                <div class="message-content">
+                  Hi, I am your AI Chatbot, you can ask me anything.
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <br><br>
+        <br><br>
+        <br><br>
+      </div>
+      <form class="message-form">
+
+        <div class="input-group">
+          <input type="text" class="form-control message-input" placeholder="Type your message...">
+          <div class="input-group-append">
+            <button type="submit" class="btn btn-primary btn-send">Send</button>
+          </div>
+        </div>
+      </form>
+    </div> -->
+    <script src="{% static 'chatgptjs/chatgpt.js' %}"></script>
+{% endblock %}

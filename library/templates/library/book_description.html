@@ -1,0 +1,49 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <script type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
+    <link href="{% static 'library/book/css/bootstrap.css' %}" rel='stylesheet' type='text/css'/>
+    <link href="{% static 'library/book/css/style.css' %}" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript" src="{% static 'library/book/js/jquery-1.11.1.min.js' %}"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:100,200,300,400,500,600,700,800,900'
+          rel='stylesheet' type='text/css'>
+{% endblock head %}
+{% block content %}
+     {% for item in bookinfo %}
+    <div class="container-fluid">
+        <div class="container_wrap">
+            <div class="content">
+                <div class="movie_top">
+                    <div class="col-md-9 movie_box">
+                        <div class="grid images_3_of_2">
+                            <div class="movie_image">
+                                <img src="{{item.image_link }}" class="img-responsive" alt=""/>
+                            </div>
+                        </div>
+                        <div class="desc1 span_3_of_2">
+                            <!-- Other elements remain unchanged -->
+                            <br>
+                            <p class="movie_option"><strong>Year: </strong>{{ item.date_published }}</p>
+                            <p class="movie_option"><strong>For sale: </strong>{{ item.is_for_sale }}</p>
+                            <p class="movie_option"><strong>Author: </strong>{{item.authors|join:", " }}</p>
+                            <p class="movie_option"><strong>Title: </strong>{{ item.title }}</p>
+                            <p class="movie_option"><strong>Description: </strong>{{ item.description }}</p>
+                            <p class="movie_option"><strong>PDF Availability: </strong>{{ item.pdf_link }}</p>
+                            <p class="movie_option"><strong>Page Count: </strong>{{ item.page_count }}</p>
+                        </div>
+                        <div class="clearfix"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     {% endfor %}
+    {% include 'library/footer.html' %}
+{% endblock content %}

@@ -1,0 +1,325 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'library/css/vendor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'library/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+          rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div style="position:fixed; top:70px; overflow-y: scroll; height: 650px;width: 100%">
+        <div style="background-image: linear-gradient(rgba(126,120,120,0.5),rgba(2,84,2,0.5),rgba(59,15,82,0.5)),url('{% static "images/img_1.png" %}');background-repeat: no-repeat;background-size: cover;background-position: center;height: 100%; width: 100%">
+            <div class="d-flex justify-content-end " style="background-color: #0f5132">
+                <a href="{% url 'mybook' %}" class="btn btn-secondary"><h2 class="section-title" style="color: white;">MY Library</h2></a>
+            </div>
+            <div class="swiper main-swiper w-100 h-75 d-flex justify-content-center align-bottom align-items-baseline">
+                <div class="swiper-wrapper">
+                    {% for book in main_books %}
+                        <div class="swiper-slide">
+                            <div class="row banner-content p-5 mt-5">
+                                <div class="content-wrapper col-md-7 w-100 h-100 text-center text-white justify-content-center align-items-center al"
+                                     style="height: 50%">
+                                    <div class="categories my-3"
+                                         style="font-size: 20px; font-weight: bolder;">{{ book.title }}</div>
+                                    <h3 class="display-4">{{ book.auther.username }}</h3>
+                                    <p class="text-white" style="color: whitesmoke">{{ book.description }}</p>
+                                    <img src="{{ book.image.url }}" alt="bookcover"
+                                         style="width: 100px ; height: 150px">
+                                    <br>
+                                    <a href="{% url 'MainbookDescription' book.id %}"
+                                       class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 px-4 py-3 mt-3 bg-warning">view
+                                        book now</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+
+
+            <section class="d-flex justify-content-center align-items-center container-fluid">
+                <form action="" method="get" class="d-flex container m-2 ">
+                    <input type="text" name="search" id="" class="form-control"
+                           placeholder="search nay books in this platform"
+                           style="background: transparent; color: white;padding: 5px 20px ; font-size: 30px">
+                </form>
+            </section>
+
+            {#            <section class="py-3"#}
+            {#                     style="background-image: url('{% static "library/images/background-pattern.jpg" %}');background-repeat: no-repeat;background-size: cover;">#}
+            {#                <div class="container-fluid">#}
+            {#                    <div class="row">#}
+            {#                        <div class="col-md-12">#}
+            {##}
+            {#                            <div class="banner-blocks">#}
+            {##}
+            {#                                <div class="banner-ad large bg-info block-1">#}
+            {##}
+            {#                                    <div class="swiper main-swiper">#}
+            {#                                        <div class="swiper-wrapper">#}
+            {#                                            {% for book in main_books %}#}
+            {#                                                <div class="swiper-slide"#}
+            {#                                                     style="background-image: url('{{ book.image.url }}'); background-size: cover; background-repeat: no-repeat;">#}
+            {#                                                    <div class="row banner-content p-5">#}
+            {#                                                        <div class="content-wrapper col-md-7 bg-dark-subtle"#}
+            {#                                                             style="height: 50%">#}
+            {#                                                            <div class="categories my-3">{{ book.title }}</div>#}
+            {#                                                            <h3 class="display-4">{{ book.auther.username }}</h3>#}
+            {#                                                            <p class="text-dark">{{ book.description|truncatechars:50 }}</p>#}
+            {#                                                            <a href="{{ book.book.url }}"#}
+            {#                                                               class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 px-4 py-3 mt-3 bg-warning">read#}
+            {#                                                                now</a>#}
+            {#                                                        </div>#}
+            {#                                                        <div class="img-wrapper col-md-5">#}
+            {#                                                            <img src="{{ book.image.url }}" class="img-fluid" alt="">#}
+            {#                                                        </div>#}
+            {#                                                    </div>#}
+            {#                                                </div>#}
+            {#                                            {% endfor %}#}
+            {#                                        </div>#}
+            {#                                        <div class="swiper-pagination"></div>#}
+            {#                                    </div>#}
+            {#                                </div>#}
+            {#                                <div class="banner-ad bg-success-subtle block-2"#}
+            {#                                     style="background: url('{{ books2.0.image.url }}') no-repeat right bottom;">#}
+            {#                                    <div class="row banner-content p-5">#}
+            {#                                        <div class="content-wrapper col-md-7 bg-dark-subtle">#}
+            {#                                            <div class="categories sale mb-3 pb-3">{{ books2.0.auther.username }}</div>#}
+            {#                                            <h3 class="banner-title">{{ books2.0.title|truncatechars:20 }}</h3>#}
+            {#                                            <a href="{{ book2.0.book.url }}"#}
+            {#                                               class="d-flex align-items-center nav-link btn btn-warning">read book#}
+            {#                                                <svg width="24" height="24">#}
+            {#                                                    <use xlink:href="#arrow-right"></use>#}
+            {#                                                </svg>#}
+            {#                                            </a>#}
+            {#                                        </div>#}
+            {#                                    </div>#}
+            {#                                </div>#}
+            {#                                <div class="banner-ad bg-danger block-3"#}
+            {#                                     style="background: url('{{ books2.1.image.url }}') no-repeat right bottom;">#}
+            {#                                    <div class="row banner-content p-5">#}
+            {##}
+            {#                                        <div class="content-wrapper col-md-7 bg-dark-subtle">#}
+            {#                                            <div class="categories sale mb-3 pb-3">{{ books2.1.auther.username }}</div>#}
+            {#                                            <h3 class="item-title">{{ books2.1.title|truncatechars:20 }}</h3>#}
+            {#                                            <a href="{{ book2.1.book.url }}"#}
+            {#                                               class="d-flex align-items-center nav-link btn btn-warning">read book#}
+            {#                                                <svg width="24" height="24">#}
+            {#                                                    <use xlink:href="#arrow-right"></use>#}
+            {#                                                </svg>#}
+            {#                                            </a>#}
+            {#                                        </div>#}
+            {#                                    </div>#}
+            {#                                </div>#}
+            {#                            </div>#}
+            {#                        </div>#}
+            {#                    </div>#}
+            {#                </div>#}
+            {#            </section>#}
+        </div>
+        <section class="py-5 overflow-hidden">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="section-header d-flex flex-wrap justify-content-between mb-5">
+                            <h2 class="section-title" style="color: whitesmoke">Programming languages available</h2>
+                            <div class="d-flex align-items-center">
+                                <a href="#" class="btn-link text-decoration-none">View All Languages →</a>
+                                <div class="swiper-buttons">
+                                    <button class="swiper-prev category-carousel-prev btn btn-yellow">❮</button>
+                                    <button class="swiper-next category-carousel-next btn btn-yellow">❯</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="category-carousel swiper">
+                            <div class="swiper-wrapper" style="height: 250px">
+                                {% for ctr in category %}
+                                    <a href="{% url 'searchbycategoty' ctr.category_name %}"
+                                       class="nav-link category-item swiper-slide">
+                                        <img src="{{ ctr.category_image.url }}" alt="Category Thumbnail"
+                                             style="height:120%; width: 80%; margin-top: -50px">
+                                        <h3 class="category-title">{{ ctr.category_name }}</h3>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {#    <section class="py-5 overflow-hidden">#}
+        {#        <div class="container-fluid">#}
+        {#            <div class="row">#}
+        {#                <div class="col-md-12">#}
+        {##}
+        {#                    <div class="section-header d-flex flex-wrap flex-wrap justify-content-between mb-5">#}
+        {##}
+        {#                        <h2 class="section-title" style="color: whitesmoke">Frameworks</h2>#}
+        {##}
+        {#                        <div class="d-flex align-items-center" style="color: whitesmoke">#}
+        {#                            <a href="#" class="btn-link text-decoration-none">View All Framewoks →</a>#}
+        {#                            <div class="swiper-buttons">#}
+        {#                                <button class="swiper-prev brand-carousel-prev btn btn-yellow">❮</button>#}
+        {#                                <button class="swiper-next brand-carousel-next btn btn-yellow">❯</button>#}
+        {#                            </div>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {##}
+        {#                </div>#}
+        {#            </div>#}
+        {#            <div class="row">#}
+        {#                <div class="col-md-12">#}
+        {##}
+        {#                    <div class="brand-carousel swiper">#}
+        {#                        <div class="swiper-wrapper">#}
+        {#                            {% for book in categories %}#}
+        {#                                <div class="swiper-slide">#}
+        {#                                    <div class="card mb-3 p-3 rounded-4 shadow border-0">#}
+        {#                                        <div class="row g-0">#}
+        {#                                            <div class="col-md-4">#}
+        {#                                                <img src="{{ book.frameworks_image.url }}" alt="Card title"#}
+        {#                                                     style="height: 200px ; width: 150px">#}
+        {#                                            </div>#}
+        {#                                            <div class=" col-md-8">#}
+        {#                                                <div class="card-body py-0"#}
+        {#                                                     style="background-color: #0f5132; height: 50px">#}
+        {#                                                    <p style="color:whitesmoke; line-height: 20px; font-size: 20px">{{ book.framework_name }}</p>#}
+        {#                                                    <h5 class="card-title"#}
+        {#                                                        style="color:whitesmoke;">{{ book.framework_description|truncatechars:20 }}</h5>#}
+        {#                                                </div>#}
+        {#                                            </div>#}
+        {#                                        </div>#}
+        {#                                    </div>#}
+        {#                                </div>#}
+        {#                            {% endfor %}#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#        </div>#}
+        {#    </section>#}
+        <section class="py-5 overflow-hidden">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="section-header d-flex flex-wrap justify-content-between my-5">
+                            <h2 class="section-title" style="color: white;">RECENT BOOKS</h2>
+                            <div class="d-flex align-items-center">
+                                <a href="#" class="btn-link text-decoration-none">View All View all books →</a>
+                                <div class="swiper-buttons">
+                                    <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+                                    <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="products-carousel swiper">
+                            <div class="swiper-wrapper">
+                                {% for book in book3 %}
+                                    <div class="product-item swiper-slide">
+                                        {#                                        <span class="badge bg-success position-absolute m-3">-15%</span>#}
+                                        {#                                        <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>#}
+                                        <figure><a href="{% url 'MainbookDescription' book.id %}" title="Product Title">
+                                            <img src="{{ book.image.url }}" style="max-height: 210px; min-height: 210px"
+                                                 class="tab-image" alt="">
+                                        </a>
+                                        </figure>
+                                        <h3>{{ book.title }}</h3>
+                                        {#                                        <span class=" qty">1 Unit</span><span class="rating"><svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5</span>#}
+
+                                        <div class="d-flex justify-content-between">
+                                            {#                                        {% if book.type == "sale" %}#}
+                                            {#                                            <span class="price btn btn-warning">ksh{{ book.amount }}</span>#}
+                                            {#                                        {% else %}#}
+                                            {#                                            <a href="{% url 'editbook' book.id %}"><span class="price btn btn-warning">view</span></a>#}
+                                            {#                                        {% endif %}#}
+                                            {#                                        <span class="price btn btn-success"> read</span>#}
+                                            <a href="{% url 'MainbookDescription' book.id %}"
+                                               style="width: 100%; background-color: #0f5132; display: flex; justify-content: center; padding: 10px 0; border-radius: 20px">view
+                                                book</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-5">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bootstrap-tabs product-tabs">
+                            <div class="tabs-header d-flex justify-content-between border-bottom my-5">
+                                <h3 style="color: white; font-size: larger ; ">Trending Books</h3>
+                            </div>
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade show active" id="nav-all" role="tabpanel"
+                                     aria-labelledby="nav-all-tab">
+                                    <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+                                        {% for book in books %}
+                                            <div class="col">
+                                                <div class="product-item">
+                                                    <figure>
+                                                        <a href="{% url 'describebook' description=book.bookinfo %}"
+                                                           title="Product Title">
+                                                            <img src="{{ book.image }}" class="tab-image"
+                                                                 style="max-height: 210px; min-height: 210px" alt="">
+                                                        </a>
+                                                    </figure>
+                                                    <h3>{{ book.title|truncatechars:20 }}</h3>
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <a href="{% url 'describebook' description=book.bookinfo %}"
+                                                           class="price btn btn-success container text-center">view
+                                                            book</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="py-5">
+            <div class="container-fluid">
+                <h2 class="my-5" style="text-decoration:underline; font-style: italic;color: whitesmoke">People are also
+                    looking for</h2>
+                <a href="#" class="btn btn-warning me-2 mb-2 text-white">Blue diamon almonds</a>
+                <a href="#" class="btn btn-warning me-2 mb-2 text-white">Angie’s Boomchickapop Corn</a>
+                <a href="#" class="btn btn-warning me-2 mb-2 text-white">Salty kettle Corn</a>
+                <a href="#" class="btn btn-warning me-2 mb-2 text-white">Salty kettle Corn</a>
+                <a href="#" class="btn btn-warning me-2 mb-2 text-white">Salty kettle Corn</a>
+                <a href="#" class="btn btn-warning me-2 mb-2 text-white">Chobani Greek Yogurt</a>
+                <a href="#" class="btn btn-warning me-2 mb-2 text-white">Sweet Vanilla Yogurt</a>
+            </div>
+        </section>
+        {% include 'library/footer.html' %}
+        <script src="{% static 'library/js/jquery-1.11.0.min.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+                crossorigin="anonymous"></script>
+        <script src="{% static 'library/js/plugins.js' %}"></script>
+        <script src="{% static 'library/js/script.js' %}"></script>
+    </div>
+{% endblock content %}

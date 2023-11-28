@@ -1,0 +1,87 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <script type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
+    <link href="{% static 'library/book/css/bootstrap.css' %}" rel='stylesheet' type='text/css'/>
+    <link href="{% static 'library/book/css/style.css' %}" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript" src="{% static 'library/book/js/jquery-1.11.1.min.js' %}"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:100,200,300,400,500,600,700,800,900'
+          rel='stylesheet' type='text/css'>
+{% endblock head %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="container_wrap">
+            <div class="content">
+                <div class="movie_top">
+                    <div class="col-md-9 movie_box">
+                        <div class="grid images_3_of_2">
+                            <div class="movie_image">
+                                <img src="{{ book.image.url }}" class="img-responsive" alt=""/>
+                            </div>
+                        </div>
+                        <div class="desc1 span_3_of_2">
+                            <!-- Other elements remain unchanged -->
+                            <br>
+                            <p class="movie_option"><strong>&nbsp</strong></p>
+                            <p class="movie_option"><strong>Year: </strong>{{ book.published_at }}</p>
+                            <p class="movie_option"><strong>For sale: </strong>{{ book.type }}</p>
+                            <p class="movie_option"><strong>Author: </strong>{{ book.auther|join:", " }}</p>
+                            <p class="movie_option"><strong>Title: </strong>{{ book.title }}</p>
+                            <p class="movie_option"><strong>Description: </strong>{{ book.description }}</p>
+                            <p class="movie_option"><strong>Falls under: </strong>{{ book.category }}</p>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+                        <div>
+                            <h4>the service is available in kenya</h4>
+                            <h2>buy through M-pesa</h2>
+                            <form action="" style="display: flex;flex-direction: column; justify-content: center" method="POST">
+                                {% csrf_token %}
+                                <label for="phone">Phone Number (start with 254):</label>
+                                <input type="tel" id="phone" name="phone" pattern="254[0-9]{9}"
+                                       title="Please enter a valid phone number starting with 254"
+                                       placeholder="254712055127" required style="width: 50%; padding: 0 20px;margin-bottom: 10px;border-radius: 5px ; height:40px; border: none">
+                                <button type="submit" class="btn btn-danger " style="width: 50%">confirm payment</button>
+                            </form>
+                        </div>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: space-evenly;">
+        <div>
+            {% if book.type == 'sale' %}
+                {% if request.user == book.auther %}
+                    <a href="{% url 'editbook' book.id %}" class="btn btn-danger">Edit book</a>
+                    <a href="{{ book.book.url }}" class="btn btn-success">read</a>
+                    <a href="{% url 'libraryhome' %}" class="btn btn-warning">back</a>
+                {% elif request.user == customer.customer %}
+                    <a href="{{ book.book.url }}" class="btn btn-success">read</a>
+                    <a href="{% url 'libraryhome' %}" class="btn btn-warning">back</a>
+                {% else %}
+                    <a href="" class="btn btn-warning">buy ksh {{ book.amount }}</a>
+                    <a href="{% url 'libraryhome' %}" class="btn btn-warning">back</a>
+                {% endif %}
+            {% else %}
+                {% if request.user == book.auther %}
+                    <a href="{% url 'editbook' book.id %}" class="btn btn-danger">Edit book</a>
+                {% endif %}
+                <a href="{{ book.book.url }}" class="btn btn-success">read</a>
+                <a href="{% url 'libraryhome' %}" class="btn btn-warning">back</a>
+            {% endif %}
+        </div>
+    </div>
+    {% include 'library/footer.html' %}
+{% endblock content %}

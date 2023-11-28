@@ -1,0 +1,59 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'library/css/bookUpload.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <section>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="container d-flex justify-content-between">
+                <div>
+                    {% for formfield in form %}
+                        {% if formfield.name != 'image' and formfield.name != 'book' %}
+                            <div>
+                                <label for="{{ formfield.name }}" class="form-label">{{ formfield.label }}</label>
+                                <p class="form-control" style="font-size: 20px">{{ formfield }}</p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div>
+                    {% for formfield in form %}
+                        {% if formfield.name == 'image' %}
+                            <div class="d-flex justify-content-center align-items-center flex-column mt-5"
+                                 style="height: 75%">
+                                <div id="imageDropArea" class="drop-area"
+                                     style="height:250px;background-image:linear-gradient(#0d5e3e,rgba(24,128,86,0.5),#0d5e3e),url('{% if form.instance.image %}{{ form.instance.image.url }}{% else %}{% static "images/img.png" %}{% endif %}');background-repeat: no-repeat; background-size: cover;background-position: center">
+                                    <p class="text-white">Drag and drop cover here or click to select</p>
+                                </div>
+                                <p class="d-none">{{ formfield }}</p>
+{#                                <label for="id_image" class="form-label btn btn-success mt-3 w-100 text-center" style="font-size: 20px; background-color: dimgrey;">Upload the cover</label>#}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div>
+                    {% for formfield in form %}
+                        {% if formfield.name == 'book' %}
+                            <div class="d-flex justify-content-center align-items-center flex-column mt-5"
+                                 style="height: 75%">
+                                <div id="bookDropArea" class="drop-area"
+                                     style="height:250px;background-image:linear-gradient(#0d5e3e,rgba(24,128,86,0.5),#0d5e3e),url('{% if form.instance.book %}{{ form.instance.book.url }}{% else %}{% static "images/img.png" %}{% endif %}');background-repeat: no-repeat; background-size: cover;background-position: center">
+                                    <p class="text-white">Drag and drop files here or click to select</p>
+                                </div>
+                                <p class="d-none">{{ formfield }}</p>
+{#                                <label for="id_book" class="form-label btn btn-success mt-3 w-100 text-center" style="font-size: 20px; background-color: dimgrey;">Upload book here</label>#}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <input type="submit" value="{% if form.instance %}UPDATE{% else %}SUBMIT BOOK{% endif %}" class="btn btn-success text-center w-75 d-flex justify-content-center m-auto" style="font-size: 20px">
+        </form>
+    </section>
+    {% include 'library/footer.html' %}
+    <script src="{% static 'library/js/bookUpload.js' %}"></script>
+{% endblock %}

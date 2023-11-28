@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+{% load static %}
+ {% block head %}
+     <link rel='stylesheet' type='text/css' media='screen' href="{% static 'styles/main.video.css' %}">
+ {% endblock %}
+{% block content %}
+
+<main>
+    <section id="room-name-wrapper">
+        <p>Room Name: <span id="room-name"></span></p>
+    </section>
+
+    <section id="video-streams">
+
+    </section>
+    <section id="controls-wrapper">
+        <div class="icon-wrapper">
+            <img class="control-icon" id="mic-btn" src="{% static 'images.video/microphone.svg'%}" />mute
+        </div>
+
+        <div class="icon-wrapper">
+            <img class="control-icon" id="camera-btn" src="{% static 'images.video/video.svg' %}" />camera
+        </div>
+
+        <div class="icon-wrapper">
+            <img class="control-icon" id="leave-btn" src="{% static 'images.video/leave.svg' %}" />exit
+        </div>
+    </section>
+</main>
+<script type="text/javascript" src="{% static 'videochat.js/AgoraRTC_N-4.19.3.js' %}"></script>
+<script type="text/javascript" src="{% static 'videochat.js/streams.js' %}" ></script>
+{% endblock content %}

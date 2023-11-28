@@ -1,0 +1,192 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+    <style>
+        @media only screen and (max-width: 600px) {
+            body {
+                height: 100vh;
+            }
+        }
+
+
+        .header1 {
+            height: 50px;
+            width: 70%;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+
+
+        }
+
+        .header1 input {
+            width: 80%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+        }
+
+        .search {
+            background-color: grey;
+            color: whitesmoke;
+            width: 80%;
+            padding: 5px 10px;
+            margin: 5px;
+        }
+
+        #suggestionsContainer {
+            width: 300px;
+            max-height: 200px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            position: absolute;
+            left: 50px;
+            border-radius: 5px;
+            background-color: #2a6496;
+        }
+
+        #suggestionsContainer::-webkit-scrollbar {
+            width: 0;
+        }
+    </style>
+
+    <main class="layout layout--3">
+        <div class="container">
+
+            <!-- Topics Start -->
+            {% include 'socialmedia/topics_component.html' %}
+
+            <!-- Topics End -->
+            <!-- Room List Start -->
+            <div class="roomList" style="position: relative">
+                <div class="roomList__header">
+                    <a href="{% url 'home' %}"
+                       style="background-color: #08c6e0; border-radius: 5px; margin: 1px; text-align: center">
+                        <h2>Study Room</h2>
+                        <p>{{ room_count }} Rooms available</p>
+                    </a>
+                    <div>
+                        <h2>My Chats</h2>
+                        <p>UNDER DEVELOPMENT</p>
+                    </div>
+                    <a class="btn btn--main" href="{% url 'create-room' %}">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                             viewBox="0 0 32 32">
+                            <title>add</title>
+                            <path
+                                    d="M16.943 0.943h-1.885v14.115h-14.115v1.885h14.115v14.115h1.885v-14.115h14.115v-1.885h-14.115v-14.115z"
+                            ></path>
+                        </svg>
+                        Create Room
+                    </a>
+                </div>
+                <div style="margin-bottom: 5px">
+                    <div class="mobile-menuItems">
+                        <a class="btn btn--main btn--pill" href="{% url 'mychats' 'individual' %}">Individuals</a>
+                        <a class="btn btn--main btn--pill" href="{% url 'mychats' 'group' %}">Groups</a>
+                        <a href="{% url 'chatbot' %}" class="btn btn--main btn--pill">chat with AI</a>
+                    </div>
+                </div>
+                <div class="d-flex" style="display: flex; justify-content: space-evenly; margin-bottom: 2px">
+                    <form class="header header1" method="POST" action="">
+                        {% csrf_token %}
+                        <label>
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                 viewBox="0 0 32 32">
+                                <title>search</title>
+                                <path
+                                        d="M32 30.586l-10.845-10.845c1.771-2.092 2.845-4.791 2.845-7.741 0-6.617-5.383-12-12-12s-12 5.383-12 12c0 6.617 5.383 12 12 12 2.949 0 5.649-1.074 7.741-2.845l10.845 10.845 1.414-1.414zM12 22c-5.514 0-10-4.486-10-10s4.486-10 10-10c5.514 0 10 4.486 10 10s-4.486 10-10 10z"
+                                ></path>
+                            </svg>
+
+                        </label>
+                        <div class="search-container ">
+                            <input placeholder="Search for Groups and people" name="search" id="searchInput"
+                                   autocomplete="off">
+                            <div></div>
+                        </div>
+
+                    </form>
+                    <a href="{% url 'creategroup' %}" class="btn rounded-1" style="outline:2px solid #00BFF0; border-radius: 50%">add group</a>
+                </div>
+                <div id="suggestionsContainer" style=""></div>
+                <div class="checking">
+                    {% if type == 'individual' %}
+                        <script src="{% static 'socialmedia/chatting.js' %}"></script>
+                    {% else %}
+                        {#                        {% include 'socialmedia/groups.html' %}#}
+                        <script src="{% static 'socialmedia/group.js' %}"></script>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Room List End -->
+
+            <!-- Activities Start -->
+            {% include 'socialmedia/activity_component.html' %}
+            <!-- Activities End -->
+        </div>
+    </main>
+    <script>
+        let selectOptions = [];
+        let users = [];
+        let groups = [];
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '/usersandgroups/', true);
+        xhr.onload = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    suggestions = JSON.parse(xhr.responseText);
+                    for (let i = 0; i < suggestions.users.length; i++) {
+                        users.push(suggestions.users[i].name);
+                    }
+
+                    for (let i = 0; i < suggestions.groups.length; i++) {
+                        groups.push(suggestions.groups[i].code);
+                    }
+                    selectOptions = [...users, ...groups];
+                }
+            }
+        };
+        xhr.send();
+        const searchInput = document.getElementById("searchInput");
+        const suggestionsContainer = document.getElementById("suggestionsContainer");
+        const searchContainer = document.querySelector(".search-container");
+        searchContainer.addEventListener("click", function () {
+            searchInput.focus();
+        });
+        searchInput.addEventListener("input", function () {
+            const searchText = searchInput.value.toLowerCase();
+            const filteredOptions = selectOptions.filter(option =>
+                option.toLowerCase().includes(searchText)
+            );
+            suggestionsContainer.innerHTML = "";
+
+            filteredOptions.forEach(option => {
+                const suggestionItem = document.createElement("div");
+                suggestionItem.textContent = option;
+                suggestionItem.classList.toggle('search')
+                suggestionItem.addEventListener("click", function () {
+                    searchInput.value = option;
+                    suggestionsContainer.innerHTML = "";
+                });
+                suggestionsContainer.appendChild(suggestionItem);
+            });
+            if (filteredOptions.length > 0) {
+                suggestionsContainer.style.display = "block";
+            } else {
+                suggestionsContainer.style.display = "none";
+            }
+        });
+        document.addEventListener("click", function (event) {
+            if (!event.target.closest(".search-container")) {
+                suggestionsContainer.style.display = "none";
+            }
+        });
+    </script>
+
+
+{% endblock content %}

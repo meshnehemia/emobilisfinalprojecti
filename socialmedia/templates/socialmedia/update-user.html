@@ -1,0 +1,69 @@
+{% extends 'main.html' %}
+{%block content%}
+    <main class="update-account layout">
+        <div class="container">
+            <div class="layout__box">
+                <div class="layout__boxHeader">
+                    <div class="layout__boxTitle">
+                        <a href="{% url 'home' %}">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                viewBox="0 0 32 32">
+                                <title>arrow-left</title>
+                                <path
+                                    d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+                                </path>
+                            </svg>
+                        </a>
+                        <h3>Edit your profile</h3>
+                    </div>
+                </div>
+                <div class="layout__body">
+                    <form class="form" action="" method ="POST" enctype="multipart/form-data">
+                        {% csrf_token%}
+                        {% for field in form %}
+                          <div class="form__group">
+                                {% if field.label == "Avator" %}
+                                   <div style="display: flex; justify-content: center; flex-direction: column-reverse; text-align: center">
+                                       <label for="{{ field.name }}" id="imagelabel" style="width: 50%;background-color: #0f5132;cursor: pointer; margin: 30px auto 0 auto;padding: 10px 0">Select another Image</label>
+                                        <img src="{{ field.value.url }}"  class = "myimage" alt="" style="height: 100px;width: 100px; border-radius: 50%; margin: auto">
+                                        <p style="display: none">{{ field }}<p>
+                                   </div>
+                                {% else %}
+                                    <label for="profile_pic">{{field.label}}</label>
+                                   {{ field }}
+                                {% endif %}
+
+                          </div>
+                        {% endfor %}
+                        <div class="form__action">
+                            <a class="btn btn--dark" href="{% url 'home' %}">Cancel</a>
+                            <button class="btn btn--main" type="submit">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+    </main>
+    <script>
+        const label = document.getElementById('imagelabel');
+        const input = document.querySelector('[name="avator"]');
+        const myimg = document.querySelector('.myimage');
+        let upload_image = myimg.src;
+        label.addEventListener('click',(e)=>{
+            input.click();
+        });
+        input.onchange = function () {
+            let file = input.files[0];
+            let name = file.name;
+            let regex = /\.(gif|jpg|jpeg|png)$/i;
+            if (regex.test(name)) {
+                myimg.src = URL.createObjectURL(input.files[0]);
+
+            } else {
+                alert("incorrect input file or the file is not image");
+
+            }
+        }
+    </script>
+{% endblock content %}

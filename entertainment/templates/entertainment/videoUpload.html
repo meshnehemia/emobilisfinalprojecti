@@ -1,0 +1,219 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <style>
+        input[type='text'],
+        input[type='textarea'],
+        input[type='text']:hover,
+        textarea:hover,
+        input,
+        input[type='text']:focus,
+        textarea:focus,
+        input[type='text']:active,
+        textarea:active {
+            width: 100%;
+            height: 100%;
+            border: none;
+            font-size: 15px;
+            outline: none;
+            margin: 5px 0;
+            border-radius: inherit;
+        }
+
+        /* Add styles for the drop area */
+        .drop-area {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        /* Add styles for displaying the image cover */
+        .image-cover {
+            max-width: 100%;
+            max-height: 200px; /* Adjust the height as needed */
+        }
+    </style>
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <div class="container mt-3">
+        <h2 class="btn-primary text-center" style="font-size: 20px">ADD NEW VIDEO</h2>
+        <div class="d-flex flex-column justify-content-start mt-5">
+            <form method="post" enctype="multipart/form-data" id="videoUploadForm" onsubmit="uploadVideo(event)">
+                {% csrf_token %}
+                <div class="d-flex justify-content-start mt-3 flex-column w-75">
+
+                    <label for="{{ form.video_title.id_for_label }}" class="form-label">Video Title:</label>
+                    <p class="form-control">{{ form.video_title }}</p>
+
+                    <label for="{{ form.video_description.id_for_label }}">Video Description:</label>
+                    {{ form.video_description }}
+
+                    <label for="{{ form.type.id_for_label }}">Video type:</label>
+                    {{ form.type }}
+
+                    <label for="{{ form.cost.id_for_label }}">Suggest cost:</label>
+                    {{ form.cost }}
+
+                    <!-- Image Drop Area -->
+                    <br><br>
+                    <div class="drop-area" id="imageDropArea" ondragenter="handleDragEnter(event)"
+                         ondragover="handleDragOver(event)" ondrop="handleImageDrop(event)"
+                         onclick="handleClickImageArea()">
+                        <p>Click or drag and drop an image here to use as the video cover</p>
+                        <input type="file" name="video_image" id="{{ form.video_image.id_for_label }}" accept="image/*"
+                               style="display: none;" onchange="displayImageCover(this)">
+                        <img id="imageCover" class="image-cover"
+                             src="{% if form.video_image.value %}{{ form.video_image.url }}{% endif %}"
+                             alt="Image Cover">
+                    </div>
+                    <br><br>
+                    <!-- Video Drop Area -->
+                    <div class="drop-area" id="videoDropArea" ondragenter="handleDragEnter(event)"
+                         ondragover="handleDragOver(event)" ondrop="handleVideoDrop(event)"
+                         onclick="handleClickVideoArea()">
+                        <p>Click or drag and drop a video here</p>
+                        <input type="file" name="video" id="{{ form.video.id_for_label }}" accept=".mp4, .webm, .ogg"
+                               style="display: none;" onchange="displayVideoName(this)">
+                        <p id="videoName" class="mt-2">
+                            {% if form.video.value %}{{ form.video.value.name }}{% endif %}</p>
+                    </div>
+
+                    <button type="submit" class="w-50 text-center mx-auto mt-3 bg-success">Submit</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Progress bar for file upload -->
+        <div class="progress mt-3">
+            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+                 aria-valuemax="100"></div>
+        </div>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        function uploadVideo(event) {
+            event.preventDefault();
+
+            let formData = new FormData(document.getElementById('videoUploadForm'));
+            let xhr = new XMLHttpRequest();
+
+            xhr.upload.addEventListener("progress", function (evt) {
+                if (evt.lengthComputable) {
+                    let percentComplete = (evt.loaded / evt.total) * 100;
+                    $('.progress-bar').width(percentComplete + '%');
+                }
+            }, false);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        let jsonResponse = JSON.parse(xhr.responseText);
+                        if (jsonResponse.success === 'Video uploaded successfully') {
+                            alert("Successfully uploaded file");
+                            window.location.href = '/entertainment/profile/';
+                        } else {
+                            alert("Failed to upload file: " + jsonResponse.error);
+                        }
+                    } else {
+                        // Handle non-200 status (e.g., server error)
+                        alert("Failed to upload file. Server returned status: " + xhr.status);
+                        console.log(xhr.response);
+                    }
+                }
+            };
+
+            xhr.open('POST', '/entertainment/uploadVideo/');
+            xhr.send(formData);
+        }
+
+        // Drag and drop functionality for the drop areas
+        function handleDragEnter(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        function handleImageDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            let files = event.dataTransfer.files;
+            let imageInput = document.getElementById('{{ form.video_image.id_for_label }}');
+
+            if (files.length > 0) {
+                let allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                let isFileTypeAllowed = Array.from(files).every(file => allowedTypes.includes(file.type));
+
+                if (isFileTypeAllowed) {
+                    imageInput.files = files;
+                    displayImageCover(imageInput);
+                } else {
+                    alert('Please drop only image files (JPEG, PNG, GIF) in the image field.');
+                }
+            }
+        }
+
+        function handleVideoDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            let files = event.dataTransfer.files;
+            let videoInput = document.getElementById('{{ form.video.id_for_label }}');
+
+            if (files.length > 0) {
+                let allowedTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+                let isFileTypeAllowed = Array.from(files).every(file => allowedTypes.includes(file.type));
+
+                if (isFileTypeAllowed) {
+                    videoInput.files = files;
+                } else {
+                    alert('Please drop only video files (MP4, WebM, OGG) in the video field.');
+                }
+            }
+        }
+
+        // Function to handle click event for image drop area
+        function handleClickImageArea() {
+            document.getElementById('{{ form.video_image.id_for_label }}').click();
+        }
+
+        // Function to handle click event for video drop area
+        function handleClickVideoArea() {
+            document.getElementById('{{ form.video.id_for_label }}').click();
+        }
+
+        // Function to display the image cover
+        function displayImageCover(input) {
+            let imageCover = document.getElementById('imageCover');
+
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imageCover.src = e.target.result;
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Function to display the name of the video file
+        function displayVideoName(input) {
+            let videoName = document.getElementById('videoName');
+
+            if (input.files && input.files[0]) {
+                videoName.innerText = input.files[0].name;
+            }
+        }
+    </script>
+{% endblock %}

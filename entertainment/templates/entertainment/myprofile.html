@@ -1,0 +1,35 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <section class="container-fluid h-100 w-100" style="position: fixed; top:80px; left:-10px; overflow-y: scroll">
+        <div>
+            <a href="{% url 'uploadvideo' %}" class="btn"><h2 class="w-100 bg-success text-center" style="position: fixed ;top: 80px;">add video</h2></a>
+        </div>
+        <div class="container-fluid w-100 d-flex flex-wrap dip mx-auto" style="position: fixed; top:100px;height:85%;overflow-y:scroll;">
+            {% for video in videos %}
+                <div class=" rounded bg-success"
+                     style="max-width: 300px;min-width: 300px; height: 200px; margin:20px 10px;position: relative;">
+                    <a href="{% url 'videosuserprofile' video.video_owner.id %}" class="d-flex w-100" style="position:absolute; top :0; left: 0">
+                        <img src="{{ video.video_owner.avator.url }}" alt="user image"
+                             style="width: 50px ;height: 50px;" class="rounded-circle m-2">
+                        <div class="d-block">
+                            <h2 class="text-dark">@{{ video.video_owner.username }}</h2>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'videodetails' video.id %}" class="watch_now rounded h-100 w-100">
+                        <img src="{{ video.video_image.url }}" class="rounded h-100 w-100" alt=""/>
+                        <div class="caption1">
+                            <i class="icon4"> </i>
+                            <p class="m_3  bg-success">{{ video.video_title }}</p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock content %}

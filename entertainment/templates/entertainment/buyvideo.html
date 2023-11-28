@@ -1,0 +1,110 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <style>
+        .btn {
+            font-size: 20px;
+        }
+
+        .align div {
+            display: flex;
+        }
+
+        p {
+            margin-top: -5px;
+            font-size: 20px;
+            font-style: italic;
+        }
+
+        h2 {
+            padding-right: 10px;
+            font-weight: bolder;
+            font-size: 20px;
+        }
+
+        img {
+            width: 100px;
+            height: 200px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <section>
+        <div>
+            <div>
+                <div class="container mt-5 d-flex justify-content-evenly">
+                    <div class="d-flex flex-column align">
+                        <div>
+                            <h2>Title:</h2>
+                            <p>{{ video.video_title }}</p><br>
+                        </div>
+                        <div>
+                            <h2>Description:</h2>
+                            <p>{{ video.video_description }}</p><br>
+                        </div>
+                        <div>
+                            <h2>Type:</h2>
+                            <p>{{ video.type }}</p><br>
+                        </div>
+                        <div>
+                            <h2>Cost:</h2>
+                            <p>{{ video.cost }}</p><br>
+                        </div>
+                        <div>
+                            <h2>Owner:</h2>
+                            <p>{{ video.video_owner.username }}</p><br>
+                        </div>
+                        <div>
+                            <h2>Cover:</h2>
+                            <img src="{{ video.video_image.url }}" alt="" style="width: 200px"><br>
+                        </div>
+                        <div>
+                            <h2>Created:</h2>
+                            <p>{{ video.created }}</p><br>
+                        </div>
+                        <div>
+                            <h2>updated:</h2>
+                            <p>{{ video.updated }}</p><br>
+                        </div>
+                        <div>
+                            <h2>Views:</h2>
+                            <p>{{ views_count }}</p><br>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>the service is available in kenya</h4>
+                        <h2>buy through M-pesa</h2>
+                        <form action="" style="display: flex;flex-direction: column; justify-content: center"
+                              method="POST">
+                            {% csrf_token %}
+                            <label for="phone">Phone Number (start with 254):</label>
+                            <input type="tel" id="phone" name="phone" pattern="254[0-9]{9}"
+                                   title="Please enter a valid phone number starting with 254"
+                                   placeholder="254712055127" required
+                                   style="min-width: 40px; padding: 0 20px;margin-bottom: 10px;border-radius: 5px ; height:40px; border: none">
+                            <button type="submit" class="btn btn-danger " style="min-width: 50px">confirm payment</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="d-flex container justify-content-evenly bg-primary">
+                    {% if video.video_owner == request.user %}
+                        <a href="{% url 'deletevideo' video.id %}" class="btn btn-danger">delete</a>
+                        <a href="{% url 'updatevideo' video.id %}" class="btn btn-warning">update</a>
+                        <a href="" class="btn btn-secondary">sales</a>
+                        <a href="{% url 'watch' video.id %}" class="btn btn-success">Play</a>
+                    {% elif video.type == 'free' %}
+                        <a href="" class="btn btn-success">Play</a>
+                    {% else %}
+                        {% if bought.buyer == request.user %}
+                            <a href="{% url 'watch' video.id %}" class="btn btn-success">Play</a>
+                        {% else %}
+                            <a href="{% url 'buyvideo' video.id %}" class="btn btn-success">Confirm payment above to proceed</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

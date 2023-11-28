@@ -1,0 +1,51 @@
+{% extends 'videocall/main.html' %}
+{% load static %}
+{% block content %}
+    <main>
+        <section id="room-name-wrapper">
+            <p>Room Name: TESTROOM</p>
+        </section>
+
+                <div id="video-streams">
+
+                    <div class="video-container" id="user-container-1">
+                        <div class="video-player" id="user-1"></div>
+                        <div class="username-wrapper"><span class="user-name">Dennis Ivanov</span></div>
+                    </div>
+
+                    <div class="video-container" id="user-container-2">
+                        <div class="video-player" id="user-2"></div> 
+                        <div class="username-wrapper"><span class="user-name">Sam</span></div>
+                    </div>
+
+                    <div class="video-container" id="user-container-3">
+                        <div class="video-player" id="user-3"></div> 
+                        <div class="username-wrapper"><span class="user-name">Peter</span></div>
+                    </div>
+
+                    <div class="video-container" id="user-container-4">
+                        <div class="video-player" id="user-4"></div> 
+                        <div class="username-wrapper"><span class="user-name">Erik</span></div>
+                    </div>
+
+                    <div class="video-container" id="user-container-4">
+                        <div class="video-player" id="user-5"></div> 
+                        <div class="username-wrapper"><span class="user-name">Paul</span></div>
+                    </div>  
+                </div>
+
+        <section id="controls-wrapper">
+            <div class="icon-wrapper">
+                <img class="control-icon" id="mic-btn" src="{% static 'images.video/chat-icon.png'%}" />
+            </div>
+
+            <div class="icon-wrapper">
+                <img class="control-icon" id="camera-btn" src="{% static 'images.video/video.svg'%}" />
+            </div>
+
+            <div class="icon-wrapper">
+                <img class="control-icon" id="leave-btn" src="{% static 'images.video/leave.svg'%}" />
+            </div>
+        </section>
+    </main>
+{% endblock content %}
