@@ -1,0 +1,70 @@
+create database hospital_information;
+use hospital_information;
+create table Department (
+	department_code varchar(20) not null, 
+	department_name varchar(20) not null ,
+	primary key(department_code));
+create table medicane (
+	medicane_name varchar(20) not null,
+	medicane_cost double ,medicane_code varchar(20),
+	primary key(medicane_code));
+create table person(
+	first_name varchar(20) not null,
+        middle_name varchar(20),
+        sur_name varchar(20),
+        person_id int not null,
+        date_of_birth date,
+        status varchar(10),
+        gender varchar(10) not null,
+        contact varchar(30),
+        primary key (person_id)
+	);
+ALTER TABLE medicane MODIFY medicane_cost DECIMAL (18, 2) DEFAULT 0.00;
+
+create table disease(
+	disease_name varchar(20) not null,
+        disease_code varchar(20) not null,
+        department_code varchar(20) not null references Department(department_code),
+        primary key(disease_code)        
+);
+create table doctor(
+	doctor_code	varchar(20) not null,
+        disease_code varchar(20) not null references disease(disease_code),
+        person_id int not null unique references person(person_id)
+);
+
+create table patient(
+	patient_id varchar(20) not null,
+    person_id int not null unique references person(person_id),
+    date_of_admission datetime,
+    disease_code varchar(20) not null references disease(disease_code),
+    Date_of_discharge datetime,
+    inpatient varchar(5)
+);
+alter table patient add primary key (patient_id);
+
+create table transaction(
+	transaction_code varchar(20) not null,
+    payment_mode  varchar(20) not null,
+    amount DECIMAL(18,2) default 0.00,
+    patient_id varchar(20) not null references patient(patient_id),
+    primary key (transaction_code)
+);
+
+create table prescription(
+	patient_id varchar(20) not null references patient(patient_id),
+	medicane_code varchar(20) references medicane(medicane_code),
+    	quantity int
+
+);
+        
+ALTER TABLE patient ADD FOREIGN KEY (person_id) REFERENCES person (person_id);
+ALTER TABLE disease ADD FOREIGN KEY (department_code) REFERENCES department(department_code);
+ALTER TABLE doctor ADD FOREIGN KEY (disease_code) REFERENCES disease (disease_code);
+ALTER TABLE doctor ADD FOREIGN KEY (person_id) REFERENCES person(person_id);
+ALTER TABLE patient ADD FOREIGN KEY (disease_code) REFERENCES disease(disease_code);
+ALTER TABLE transaction ADD FOREIGN KEY (patient_id) REFERENCES patient (patient_id);
+ALTER TABLE prescription ADD FOREIGN KEY (patient_id) REFERENCES patient (patient_id);
+ALTER TABLE prescription ADD FOREIGN KEY (medicane_code) REFERENCES medicane (medicane_code);
+	
+        

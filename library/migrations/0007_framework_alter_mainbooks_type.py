@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('framework_name', models.CharField(max_length=20)),
                 ('framework_description', models.TextField(max_length=100)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('frameworks_image', models.ImageField(upload_to='categories/')),
+                ('frameworks_image', models.ImageField(upload_to='framework/')),
             ],
             options={
                 'ordering': ['-updated_at'],

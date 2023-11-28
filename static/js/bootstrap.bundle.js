@@ -1710,7 +1710,7 @@
 
   var beforeMain = 'beforeMain';
   var main = 'main';
-  var afterMain = 'afterMain'; // modifier with the purpose to write to the DOM (or write into a categories state)
+  var afterMain = 'afterMain'; // modifier with the purpose to write to the DOM (or write into a framework state)
 
   var beforeWrite = 'beforeWrite';
   var write = 'write';

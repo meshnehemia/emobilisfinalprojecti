@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.utils.timesince import timesince
@@ -6,12 +5,12 @@ from django.views.decorators.csrf import csrf_exempt
 # from django.views.static import serve
 
 # from finalemobilisprojrct import settings
-from .models import Room, Topic, Message, User, PersonalChat, GroupMembers, GroupMessages, Groups
+from .models import Room, Topic, Message, User
 from django.http import HttpResponse, JsonResponse, Http404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import RoomForm, userForm, MyUserCreationForm, CreateGroup
+from .forms import RoomForm, userForm, MyUserCreationForm
 
 
 # Create your views here.
@@ -95,7 +94,7 @@ def room(request, pk):
     if request.method == 'POST':
         body = request.POST.get('body')
         if body:
-            # return render(request,'socialmedia/login_error.html', {"message":"arrived"})
+        # return render(request,'socialmedia/login_error.html', {"message":"arrived"})
             message = Message.objects.create(
                 user=request.user,
                 room=room,
@@ -225,7 +224,6 @@ def activityPage(request):
 from django.http import JsonResponse
 
 
-@login_required(login_url='login')
 @csrf_exempt
 def chatting(request, pk):
     room_messages = Message.objects.filter(room_id=pk)
@@ -257,291 +255,9 @@ def chatting(request, pk):
 
     # return JsonResponse({'messages': messages_data})
 
-
 # def custom_media_serve(request, path):
 #     try:
 #         return serve(request, path, document_root=settings.MEDIA_ROOT)
 #     except Http404:
 #         # Handle the 404 response for media files here
 #         return render(request, '404_media.html', status=404)
-
-
-@login_required(login_url='login')
-@csrf_exempt
-def Mychats(request, type):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
-    rooms = Room.objects.filter(
-        Q(topic__name__icontains=q) |
-        Q(name__icontains=q) |
-        Q(description__icontains=q)
-    )
-    topics = Topic.objects.all()[0:5]
-    room_count = rooms.count()
-    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
-    if type == 'individual':
-        mychats = PersonalChat.objects.filter(Q(sender=request.user) | Q(receiver=request.user)).distinct().order_by(
-            '-time')
-
-        mychat = [
-            {
-                'sendername': i.sender.username,
-                'senderid': i.sender.id,
-                'receiver': i.receiver.username,
-                'receiverid': i.receiver.id,
-                'sendericon': i.sender.avator.url,
-                'message': i.message,
-                'receivericon': i.sender.avator.url,
-                'time': timesince(i.time)
-            } for i in mychats
-        ]
-
-    else:
-        mychats = GroupMembers.objects.filter(member=request.user).order_by('-id')
-
-        mychat = [
-            {
-                'groupname': i.group.name,
-                'icon': i.group.icon.url,
-                'time': timesince(i.group.created),
-                'members': GroupMembers.objects.filter(group=i.group).count(),
-                'groupid': i.group.id,
-                'code': i.group.groupcode
-            } for i in mychats
-        ]
-    if request.method == 'POST':
-        username = request.POST.get('search')
-        username = username.lower()
-        try:
-            if username:
-                person = User.objects.get(username=username)
-                pk = person.id
-                if person:
-                    return redirect('/chatscreem/' + str(pk) + '/')
-                else:
-                    redirect('/groupchatscrean/' + str(pk) + '/')
-        except ObjectDoesNotExist:
-            pk = username
-            return redirect('/groupchatscrean/' + str(pk) + '/')
-
-    context = {'rooms': rooms, 'mychats': mychat, 'topics': topics, 'group_participants': room_count,
-               "room_messages": room_messages, 'type': type}
-    return render(request, 'socialmedia/mychats.html', context)
-
-
-@login_required(login_url='login')
-@csrf_exempt
-def chatscreen(request, pk):
-    information = User.objects.get(pk=pk)
-
-    if request.method == 'POST':
-        message_text = request.POST.get('message')
-
-        if message_text:
-            # Create a PersonalChat object for the sent message
-            error = PersonalChat.objects.create(
-                sender=request.user,
-                receiver=User.objects.get(id=pk),
-                message=request.POST.get('message'),
-                statis="sent"
-            )
-            # Assuming you want to send a JSON response
-            print(error)
-            return JsonResponse({'status': 'success', 'message': 'Message sent successfully'})
-        # return JsonResponse({'status': 'error', 'message': 'Invalid request or empty message'})
-    name = information.username
-    return render(request, 'socialmedia/chatare.html', {"pk": pk, 'name': name})
-
-
-@login_required(login_url='login')
-@csrf_exempt
-def loadpersonalchats(request, pk):
-    chats = PersonalChat.objects.filter(
-        (Q(sender=request.user) & Q(receiver_id=pk)) | (Q(receiver=request.user) & Q(sender_id=pk))
-    ).order_by('time')
-    user = request.user  # Corrected the typo here
-    message = [
-        {
-            "user": user.pk,
-            # "usericon": user.avator.url,
-            "senderid": mes.sender.id,
-            "sender": mes.sender.username,
-            "time": timesince(mes.time),
-            "receiverid": mes.receiver.id,
-            "receiver": mes.receiver.username,
-            "message": mes.message,
-            'messageid': mes.id,
-            "sendericon": mes.sender.avator.url,
-            "receivericon": mes.receiver.avator.url
-        } for mes in chats
-    ]
-    return JsonResponse({"messages": message})
-
-
-@login_required(login_url='login')
-@csrf_exempt
-def getchats(request, type):
-    try:
-        if type == 'individual':
-            mychats = PersonalChat.objects.filter(
-                Q(sender=request.user) | Q(receiver=request.user)).distinct().order_by(
-                '-time')
-            mychat = [
-                {
-                    'user': request.user.username,
-                    'type': 'individual',
-                    'sendername': i.sender.username,
-                    'senderid': i.sender.id,
-                    'receiver': i.receiver.username,
-                    'receiverid': i.receiver.id,
-                    'sendericon': i.sender.avator.url,
-                    'message': i.message,
-                    'receivericon': i.sender.avator.url,
-                    'time': timesince(i.time)
-                } for i in mychats
-            ]
-
-        else:
-            mychats = GroupMembers.objects.filter(member=request.user).order_by('-id')
-
-            mychat = [
-                {
-                    'type': 'group',
-                    'groupname': i.group.name,
-                    'icon': i.group.icon.url,
-                    'time': timesince(i.group.created),
-                    'members': GroupMembers.objects.filter(group=i.group).count(),
-                    'groupid': i.group.id,
-                    'code': i.group.groupcode
-                } for i in mychats
-            ]
-
-        context = {'mychats': mychat}
-        return JsonResponse(context)
-
-    except Exception as e:
-        # Log the exception for debugging purposes
-        print(f"Error in getchats view: {e}")
-        return JsonResponse({'error': 'Internal Server Error'}, status=500)
-
-
-@login_required(login_url='login')
-@csrf_exempt
-def deletepmessage(request, pkmessage, pkroom):
-    obj = PersonalChat.objects.get(pk=pkmessage)
-    if request.method == 'POST':
-        obj.delete()
-        information = User.objects.get(pk=pkroom)
-        name = information.username
-        return render(request, 'socialmedia/chatare.html', {"pk": pkroom, 'name': name})
-
-    return render(request, 'socialmedia/delete.html', {'obj': obj})
-
-
-@login_required(login_url='login')
-@csrf_exempt
-def groupchat(request, code):
-    try:
-        group_member = GroupMembers.objects.get(member=request.user, group__groupcode=code)
-    except ObjectDoesNotExist:
-        # Handle the case where the user is not a member of the group
-        return JsonResponse({'error': 'User is not a member of the group'}, status=403)
-
-    chat = GroupMessages.objects.filter(group__groupcode=code)
-    mychat = [
-        {
-            'user': request.user.username,
-            'type': 'group',
-            'sendername': message.sender.username,
-            'senderid': message.sender.id,
-            'sendericon': message.sender.avator.url,
-            'message': message.message,
-            'messageid': message.id,
-            'time': timesince(message.time)
-        } for message in chat
-    ]
-
-    context = {'mychats': mychat}
-    return JsonResponse(context)
-
-
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from .models import GroupMessages, Groups
-
-
-@login_required(login_url='login')
-@csrf_exempt
-def groupchatscreen(request, code):
-    group = get_object_or_404(Groups, groupcode=code)
-    try:
-        member = GroupMembers.objects.get(member=request.user, group=group)
-    except ObjectDoesNotExist:
-        if request.method == 'POST':
-            password = request.POST.get('password')
-            if password:
-                if group.group_password == password:
-                    verified, created = GroupMembers.objects.get_or_create(
-                        group=group,
-                        member=request.user
-                    )
-                    name = group.name
-                    return render(request, 'socialmedia/groupchatarea.html', {"code": code, 'name': name})
-        context = {'name': group.name}
-        return render(request, 'socialmedia/verify.html', context)
-
-    if request.method == 'POST':
-        message_text = request.POST.get('message')
-
-        if message_text:
-            try:
-                GroupMessages.objects.create(
-                    sender=request.user,
-                    message=message_text,
-                    group=group,
-                )
-                return JsonResponse({'status': 'success', 'message': 'Message sent successfully'})
-            except Exception as e:
-                # Handle the error, log it, or provide an appropriate response
-                return JsonResponse({'status': 'error', 'message': f'Error: {str(e)}'})
-
-        return JsonResponse({'status': 'error', 'message': 'Invalid request or empty message'})
-
-    name = group.name
-    return render(request, 'socialmedia/groupchatarea.html', {"code": code, 'name': name})
-
-
-@login_required(login_url='login')
-@csrf_exempt
-def deletegroupmessage(request, code, pk):
-    obj = GroupMessages.objects.get(pk=pk)
-    information = Groups.objects.get(groupcode=code)
-    if request.method == 'POST':
-        obj.delete()
-        name = information.name
-        return render(request, 'socialmedia/groupchatarea.html', {"code": code, 'name': name})
-
-    return render(request, 'socialmedia/delete.html', {'obj': obj})
-
-
-def getusernames(request):
-    usrs = User.objects.all()
-    user = [{
-        "name": i.username,
-        "id": i.id,
-    } for i in usrs]
-    groups = Groups.objects.all()
-    group = [{
-        "name": i.name,
-        "code": i.groupcode
-
-    } for i in groups]
-
-    return JsonResponse({"users": user, "groups": group})
-
-
-@login_required(login_url='login')
-@csrf_exempt
-def creategroup(request):
-    form = CreateGroup()
-    context ={'form':form}
-    return render(request, 'socialmedia/creategroup.html', context)

@@ -1,0 +1,35 @@
+ document.addEventListener('DOMContentLoaded', function () {
+            // Assuming you have a button or element with the class 'videocalls'
+            const join = document.querySelector('.videocalls');
+            const username = "{{ request.user.username }}"; // Retrieve the username from Django template
+
+            join.addEventListener('click', async (e) => {
+                e.preventDefault();
+
+                const title = document.querySelector('.title_room').innerText;
+
+                alert(username);
+                alert(title);
+
+                try {
+                    let room = title; // Replace with the actual room ID or identifier
+                    let response = await fetch(`/videochat/get_token/?channel=${room}`);
+                    let data = await response.json();
+                    let UID = data.uid;
+                    let token = data.token;
+
+                    sessionStorage.setItem('UID', UID);
+                    sessionStorage.setItem('token', token);
+                    sessionStorage.setItem('room', room);
+                    sessionStorage.setItem('name', username);
+
+                    window.open('/videochat/room/', '_self');
+                } catch (error) {
+                    console.error('Error fetching or processing data:', error);
+                    // Handle errors as needed
+                }
+            });
+        });
+
+
+    </script>

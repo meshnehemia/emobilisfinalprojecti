@@ -3,12 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+
 from .credentials import MpesaAccessToken, LipanaMpesaPpassword
 from .forms import MainBooksForm, CategoryForm
 from .models import MainBooks, Category, Framework, BookBought
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
 
 api_key = 'AIzaSyCTm9EWtvOvEtiRIlnIH5sH0XETPz8Mf3A'
 user = ''
@@ -47,7 +45,7 @@ def home(request):
         "books2": book2,
         "main_books": book1,
         "category": category,
-        "categories": framework,
+        "framework": framework,
         "book3": book3
     }
 
@@ -84,7 +82,7 @@ def searchhome(request, search):
         "books2": book2,
         "main_books": book1,
         "category": category,
-        "categories": framework,
+        "framework": framework,
         "book3": book3
     }
 
@@ -192,14 +190,13 @@ def bookupload(request):
 
                 if book_created:
                     # return JsonResponse({'success': True, 'redirect_url': f'/library/mainbookinformation/{book.pk}/'})
-                    # return mainbookinformation(request, book.pk)
-                    return JsonResponse({'success': 'success'})
+                    return mainbookinformation(request, book.pk)
                 else:
-                    return JsonResponse({'success': False, 'error': form.errors})
+                    return JsonResponse({'success': False, 'error': 'Book already exists'})
             else:
-                return JsonResponse({'success': False, 'error': form.errors})
+                return JsonResponse({'success': False, 'error': 'User not authenticated'})
         else:
-            return JsonResponse({'success': False, 'error': form.errors})
+            return JsonResponse({'success': False, 'error': 'Form is not valid'})
     else:
         form = MainBooksForm()
     context = {'form': form}
@@ -244,7 +241,6 @@ def buybook(request, pk):
             book=book,
             customer=request.user,
             amount=amount
-
         )
         try:
             cm = BookBought.objects.get(customer=request.user, book=book)
@@ -260,6 +256,9 @@ def buybook(request, pk):
     return render(request, 'library/buybook.html', context)
 
 
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 @csrf_exempt

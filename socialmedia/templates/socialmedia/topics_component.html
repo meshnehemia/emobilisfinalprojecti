@@ -6,6 +6,9 @@
         <li>
             <a href="{% url 'home' %}" class="active">All <span>{{ topic.count }}</span></a>
         </li>
+        <li>
+            <a href="{% url 'chatbot' %}" class="active">chat with AI <span>@ai</span></a>
+        </li>
         {% for topic in topics %}
             <li>
                 <a href="{% url 'home' %}?q={{ topic.name }}">{{ topic.name }}

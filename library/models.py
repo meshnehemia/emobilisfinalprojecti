@@ -8,7 +8,7 @@ class Framework(models.Model):
     framework_name = models.CharField(max_length=20)
     framework_description = models.TextField(max_length=100)
     updated_at = models.DateTimeField(auto_now=True)
-    frameworks_image = models.ImageField(null=False, upload_to='categories/')
+    frameworks_image = models.ImageField(null=False, upload_to='framework/')
 
     class Meta:
         ordering = ['-updated_at']
@@ -19,7 +19,7 @@ class Framework(models.Model):
 
 class Category(models.Model):
     category_name = models.CharField(max_length=20)
-    category_image = models.ImageField(null=True, upload_to='languages/')
+    category_image = models.ImageField(null=True, upload_to='languages/', default="book_cover/bg2.png")
     category_description = models.CharField(max_length=50)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -41,7 +41,7 @@ class MainBooks(models.Model):
     image = models.ImageField(null=False, upload_to='book_cover/')
     book = models.FileField(null=False, upload_to='books/')
     type = models.CharField(max_length=10, choices=option, default='free')
-    amount = models.DecimalField(decimal_places=2, max_digits=20, default=0)
+    amount = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE, default=1)
 
     class Meta:

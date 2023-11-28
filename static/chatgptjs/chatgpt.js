@@ -1,17 +1,17 @@
-const messagesList = document.querySelector('.messages-list');
-const messageForm = document.querySelector('.message-form');
-const messageInput = document.querySelector('.message-input');
-let mymessage = "";
-messageForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const message = messageInput.value.trim();
-    if (message.length === 0) {
-        return;
-    } else {
-        mymessage += "me : " + message + " .";
-        const messageItem = document.createElement('li');
-        messageItem.classList.add('message', 'sent');
-        messageItem.innerHTML = `
+const  messagesList =document.querySelector('.messages-list');
+        const messageForm =document.querySelector('.message-form');
+        const messageInput =document.querySelector('.message-input');
+        let mymessage ="";
+        messageForm.addEventListener('submit',(event)=>{
+            event.preventDefault();
+            const message= messageInput.value.trim();
+            if(message.length === 0){
+                return ;
+            }else{
+                mymessage += "me : " + message+" .";
+                const messageItem =document.createElement('li');
+                messageItem.classList.add('message','sent');
+                messageItem.innerHTML =  `
                      <div class="d-flex justify-content-end">
                                     <div class="d-flex flex-row justify-content-end mb-4 pt-1"><div>
                                         <p class="small p-2 me-3 mb-3 text-dark bg-white rounded-3 bg-warning" style="margin-left: 70px;margin-top: 50px;">${message}</p>
@@ -22,23 +22,23 @@ messageForm.addEventListener('submit', (event) => {
                                         </div>
                                     </div>
                                 </div>`;
-        messagesList.appendChild(messageItem);
-        messageInput.value = '';
-        fetch('', {
-            method: 'POST',
-            header: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: new URLSearchParams({
-                'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'message': mymessage
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                const response = data.response;
-                const messageItem = document.createElement('li');
-                messageItem.classList.add('message', 'received');
-                mymessage += " assistance AI : " + response + " .";
-                messageItem.innerHTML = `
+                messagesList.appendChild(messageItem);
+                messageInput.value ='';
+                fetch('',{
+                    method:'POST',
+                    header: {'Content-Type':'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams({
+                        'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        'message':mymessage
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data=>{
+                        const response =data.response;
+                        const messageItem =document.createElement('li');
+                        messageItem.classList.add('message','received');
+                        mymessage += " assistance AI : " + response +" .";
+                        messageItem.innerHTML =`
                             <div class="messages-list">
                                 <div class="d-flex justify-content-start">
                                    <div class="d-block">
@@ -52,9 +52,9 @@ messageForm.addEventListener('submit', (event) => {
                             </div>
                         </div>
                         `;
-                console.log(mymessage)
-                messagesList.appendChild(messageItem);
-            })
-    }
-})
+                        console.log(mymessage)
+                        messagesList.appendChild(messageItem);
+                    })
+            }
+        })
 

@@ -24,15 +24,3 @@ class MyVideos(models.Model):
 class Views(models.Model):
     video = models.ForeignKey(MyVideos, on_delete=models.CASCADE, related_name='video_views')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-class VideoSale(models.Model):
-    buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buyer_sales')
-    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_sales')
-    video = models.ForeignKey(MyVideos, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
-    cost = models.DecimalField(default=0, decimal_places=2, max_digits=20)
-
-    def __str__(self):
-        return f"Sale: {self.seller.username} to {self.buyer.username} for {self.video.video_title}"
-

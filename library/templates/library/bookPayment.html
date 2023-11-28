@@ -70,7 +70,8 @@
                                             <tbody>
                                             <script>let amount = 0</script>
                                             {% for book in books %}
-                                                <tr>
+                                                <tr class="w-100 btn-success px-3"
+                                                    style="display: flex; justify-content: space-evenly;padding:3px 30px">
                                                     <td><a href="{% url 'bookinfosale' book.book.title %}"><img
                                                             src="{{ book.book.image.url }}" alt="cover"
                                                             style="height: 100px; width: 80px;"></a></td>

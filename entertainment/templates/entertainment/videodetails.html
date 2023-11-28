@@ -69,16 +69,12 @@
             {% if video.video_owner == request.user %}
                 <a href="{% url 'deletevideo' video.id %}" class="btn btn-danger">delete</a>
                 <a href="{% url 'updatevideo' video.id %}" class="btn btn-warning">update</a>
-                <a href="{% url 'videosales' video.id %}" class="btn btn-secondary">sales</a>
+                <a href="" class="btn btn-secondary">sales</a>
                 <a href="{% url 'watch' video.id %}" class="btn btn-success">Play</a>
             {% elif video.type == 'free' %}
-                <a href="{% url 'watch' video.id %}" class="btn btn-success">Play</a>
+                <a href="" class="btn btn-success">Play</a>
             {% else %}
-                {% if bought.buyer == request.user %}
-                    <a href="{% url 'watch' video.id %}" class="btn btn-success">Play</a>
-                {% else %}
-                    <a href="{% url 'buyvideo' video.id %}" class="btn btn-success">Buy</a>
-                {% endif %}
+                <a href="" class="btn btn-success">Buy</a>
             {% endif %}
         </div>
     </section>

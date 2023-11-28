@@ -4,18 +4,7 @@ from socialmedia import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('mychats/<str:type>/', views.Mychats, name='mychats'),
-    path('getmychats/<str:type>/', views.getchats, name='chatsget'),
-    path('getgroupchats/<str:code>/', views.groupchat, name='groupchatsget'),
-    path('groupchatscrean/<str:code>/', views.groupchatscreen, name='groupchatscreen'),
-    path('getpersonalchats/<int:pk>/', views.loadpersonalchats, name='startchat'),
-    path('deletepmessage/<int:pkmessage>/<int:pkroom>/', views.deletepmessage, name='deletemessage'),
-    path('deletegroupmessage/<str:code>/<int:pk>/', views.deletegroupmessage, name='deletegroupmessage'),
-    path('usersandgroups/', views.getusernames, name='usgpnames'),
-    path('creategroup/', views.creategroup, name='creategroup'),
-
     path('login/', views.loginPage, name='login'),
-    path('chatscreem/<int:pk>/', views.chatscreen, name='chatwithme'),
     path('register/', views.registerPage, name='register'),
     path('logout/', views.logoutUser, name='logout'),
     path('navbar/', views.navbar, name='navbar'),

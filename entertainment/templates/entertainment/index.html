@@ -28,18 +28,6 @@
             });
         });
     </script>
-    <style>
-        @media only screen and (max-width: 600px) {
-            .play_video {
-                height: 30vh;
-            }
-            .dsc{
-                top: 0;
-                max-height: 40px;
-            }
-        }
-    </style>
-
 {% endblock head %}
 {% block content %}
     <div style="width: 100%; position: fixed;top: 70px; overflow-y: scroll; height: 680px">
@@ -55,16 +43,26 @@
                     <div class="callbacks_container play_video">
                         <ul class="rslides" id="slider">
                             {% for video in priority %}
-                                <li style="position: relative">
+                                <li>
                                     <img src="{{ video.thumbnail }}" class="img-responsive" alt=""/>
-{#                                    <div class="button">#}
-{#                                        <a href="{{ video.url }}" class="hvr-shutter-out-horizontal watch_now">Watch#}
-{#                                            Now</a>#}
-{#                                    </div>#}
-                                    <p style="position: absolute; bottom: 5px;background-color: #2a6496;" class="p-3 rounded dsc">{{ video.title|truncatechars:60 }}</p>
+                                    <div class="button">
+                                        <a href="{{ video.url }}" class="hvr-shutter-out-horizontal watch_now">Watch
+                                            Now</a>
+                                    </div>
                                 </li>
-
                             {% endfor %}
+                            {#                            <li><img src="{{ response.1.thumbnail }}" class="img-responsive" alt=""/>#}
+                            {#                                <div class="button">#}
+                            {#                                    <a href="{{ response.1.url }}" class="hvr-shutter-out-horizontal watch_now">Watch#}
+                            {#                                        Now</a>#}
+                            {#                                </div>#}
+                            {#                            </li>#}
+                            {#                            <li><img src="{{ response.2.thumbnail }}" class="img-responsive" alt=""/>#}
+                            {#                                <div class="button">#}
+                            {#                                    <a href="{{ response.2.url }}" class="hvr-shutter-out-horizontal watch_now">Watch#}
+                            {#                                        Now</a>#}
+                            {#                                </div>#}
+                            {#                            </li>#}
                         </ul>
                     </div>
                     <div class="banner_desc">

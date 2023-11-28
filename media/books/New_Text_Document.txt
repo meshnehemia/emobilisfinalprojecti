@@ -1,0 +1,36 @@
+make a container holding the elements to me in flex 
+give the container a class 
+apply the following in the class 
+
+
+1.display to be flex
+2justify content space between or space evenly works the same in the demo 
+
+<div class="container">
+	<div> 
+		image
+		header
+		paragraph
+	</div>
+	<div>
+		image
+		header
+		paragraph
+	</div>
+	<div>
+		image
+		header
+		paragraph
+	</div>
+</div>
+	style to apply 
+	.container{
+		display:flex;
+		justfy-content:space-between; <!--also space-evenly works-->
+	}
+	img{
+		border-radius:50%;
+		<!--height should be the same as the width for the image to be a circle -->
+	}
+	
+	
